@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 # File name   : setup.py
-# Author      : Adeept
-# Date        : 2020/3/14
+# Author      : majki09
+# Date        : 2022/11/02
 
 import os
 import time
@@ -38,7 +38,7 @@ for x in range(1,4):
 		break
 
 for x in range(1,4):
-	if os.system("sudo apt-get install -y python-dev python-pip libfreetype6-dev libjpeg-dev build-essential") == 0:
+	if os.system("sudo apt-get install -y python3-dev python3-pip libfreetype6-dev libjpeg-dev build-essential") == 0:
 		break
 
 for x in range(1,4):
@@ -83,15 +83,15 @@ for x in range(1,4):
 		break
 
 for x in range(1,4):
-	if os.system("sudo pip3 install numpy") == 0:
+	if os.system("sudo pip3 install -U numpy") == 0:
 		break
 
 for x in range(1,4):
-	if os.system("sudo pip3 install opencv-contrib-python==3.4.3.18") == 0:
+	if os.system("sudo pip3 install opencv-contrib-python==3.4.18.65") == 0:
 		break
 
 for x in range(1,4):
-	if os.system("sudo apt-get -y install libqtgui4 libhdf5-dev libhdf5-serial-dev libatlas-base-dev libjasper-dev libqt4-test") == 0:
+	if os.system("sudo apt-get -y install libqt5gui5 libhdf5-dev libhdf5-serial-dev libatlas-base-dev libjasper-dev libqt5test5 libopenblas-dev") == 0:
 		break
 
 for x in range(1,4):
