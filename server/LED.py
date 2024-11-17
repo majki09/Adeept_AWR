@@ -10,7 +10,7 @@ from rpi_ws281x import *
 import argparse
 
 # LED strip configuration:
-LED_COUNT      = 16      # Number of LED pixels.
+LED_COUNT      = 6      # Number of LED pixels.
 LED_PIN        = 12      # GPIO pin connected to the pixels (18 uses PWM!).
 #LED_PIN        = 10      # GPIO pin connected to the pixels (10 uses SPI /dev/spidev0.0).
 LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
@@ -21,7 +21,7 @@ LED_CHANNEL    = 0       # set to '1' for GPIOs 13, 19, 41, 45 or 53
 
 class LED:
     def __init__(self):
-        self.LED_COUNT      = 16      # Number of LED pixels.
+        self.LED_COUNT      = 6       # Number of LED pixels.
         self.LED_PIN        = 12      # GPIO pin connected to the pixels (18 uses PWM!).
         self.LED_FREQ_HZ    = 800000  # LED signal frequency in hertz (usually 800khz)
         self.LED_DMA        = 10      # DMA channel to use for generating signal (try 10)
@@ -46,6 +46,7 @@ class LED:
             time.sleep(wait_ms/1000.0)
 
 if __name__ == '__main__':
+    # import pdb; pdb.set_trace()
     while True:
         led = LED()
         try:
