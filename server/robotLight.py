@@ -4,14 +4,13 @@
 # Author	  : William
 # Date		: 2019/02/23
 import time
-import RPi.GPIO as GPIO
 import sys
 from rpi_ws281x import *
 import threading
 
 class RobotLight(threading.Thread):
 	def __init__(self, *args, **kwargs):
-		self.LED_COUNT	  	= 16	  # Number of LED pixels.
+		self.LED_COUNT	  	= 6	  # Number of LED pixels.
 		self.LED_PIN		= 12	  # GPIO pin connected to the pixels (18 uses PWM!).
 		self.LED_FREQ_HZ	= 800000  # LED signal frequency in hertz (usually 800khz)
 		self.LED_DMA		= 10	  # DMA channel to use for generating signal (try 10)
@@ -24,13 +23,7 @@ class RobotLight(threading.Thread):
 		self.colorBreathB = 0
 		self.breathSteps = 10
 
-		self.lightMode = 'none'		#'none' 'police' 'breath'
-
-		GPIO.setwarnings(False)
-		GPIO.setmode(GPIO.BCM)
-		GPIO.setup(5, GPIO.OUT)
-		GPIO.setup(6, GPIO.OUT)
-		GPIO.setup(13, GPIO.OUT)
+		self.lightMode = 'none'		#'none' 'hazard' 'police' 'breath'
 
 		# Create NeoPixel object with appropriate configuration.
 		self.strip = Adafruit_NeoPixel(self.LED_COUNT, self.LED_PIN, self.LED_FREQ_HZ, self.LED_DMA, self.LED_INVERT, self.LED_BRIGHTNESS, self.LED_CHANNEL)
@@ -67,6 +60,23 @@ class RobotLight(threading.Thread):
 	def resume(self):
 		self.__flag.set()
 
+	def hazard(self, switch):
+		if switch == 'on':
+			self.lightMode = 'hazard'
+			self.resume()
+		if switch == 'off':
+
+
+	def hazardProcessing(self):
+		while self.lightMode == 'hazard':
+			for i in range(0,1):
+				self.setSomeColor(255,40,0,[2,3])
+				time.sleep(0.5)
+				self.setSomeColor(0,0,0,[2,3])
+				time.sleep(0.5)
+			if self.lightMode != 'hazard':
+				break
+			#time.sleep(0.1)
 
 	def police(self):
 		self.lightMode = 'police'
@@ -112,58 +122,26 @@ class RobotLight(threading.Thread):
 				self.setColor(self.colorBreathR-(self.colorBreathR*i/self.breathSteps), self.colorBreathG-(self.colorBreathG*i/self.breathSteps), self.colorBreathB-(self.colorBreathB*i/self.breathSteps))
 				time.sleep(0.03)
 
-
-	def frontLight(self, switch):
-		if switch == 'on':
-			GPIO.output(6, GPIO.HIGH)
-			GPIO.output(13, GPIO.HIGH)
-		elif switch == 'off':
-			GPIO.output(5,GPIO.LOW)
-			GPIO.output(13,GPIO.LOW)
-
-
-	def switch(self, port, status):
-		if port == 1:
-			if status == 1:
-				GPIO.output(5, GPIO.HIGH)
-			elif status == 0:
-				GPIO.output(5,GPIO.LOW)
-			else:
-				pass
-		elif port == 2:
-			if status == 1:
-				GPIO.output(6, GPIO.HIGH)
-			elif status == 0:
-				GPIO.output(6,GPIO.LOW)
-			else:
-				pass
-		elif port == 3:
-			if status == 1:
-				GPIO.output(13, GPIO.HIGH)
-			elif status == 0:
-				GPIO.output(13,GPIO.LOW)
-			else:
-				pass
-		else:
-			print('Wrong Command: Example--switch(3, 1)->to switch on port3')
-
-
-	def set_all_switch_off(self):
-		self.switch(1,0)
-		self.switch(2,0)
-		self.switch(3,0)
-
-
 	def headLight(self, switch):
 		if switch == 'on':
-			GPIO.output(5, GPIO.HIGH)
+			self.setSomeColor(255, 255, 255, [0,5])
 		elif switch == 'off':
-			GPIO.output(5,GPIO.LOW)
+			self.setSomeColor(0, 0, 0, [0,5])
 
+	def highBeam(self, switch):
+		if switch == 'on':
+			self.setSomeColor(255, 255, 255, [1,4])
+		elif switch == 'off':
+			self.setSomeColor(0, 0, 0, [1,4])
+
+	def set_all_off(self):
+		self.pause()
 
 	def lightChange(self):
 		if self.lightMode == 'none':
 			self.pause()
+		elif self.lightMode == 'hazard':
+			self.hazardProcessing()
 		elif self.lightMode == 'police':
 			self.policeProcessing()
 		elif self.lightMode == 'breath':
@@ -183,6 +161,6 @@ if __name__ == '__main__':
 	RL.breath(70,70,255)
 	time.sleep(15)
 	RL.pause()
-	RL.frontLight('off')
 	time.sleep(2)
 	RL.police()
+
