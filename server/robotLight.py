@@ -65,6 +65,8 @@ class RobotLight(threading.Thread):
 			self.lightMode = 'hazard'
 			self.resume()
 		if switch == 'off':
+			self.setSomeColor(0,0,0,[2,3])
+			self.lightMode = 'none'
 
 
 	def hazardProcessing(self):
